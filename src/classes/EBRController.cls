@@ -28,10 +28,10 @@ public with sharing class EBRController {
                 
             Integer status = response.getStatusCode();
                 
-            if(status == 307){
+            if (status == 307) {
                 Integer count = 0;
                 
-                while(status == 307 && count <= 10){
+                while (status == 307 && count <= 10) {
                     url = response.getHeader('Location');
 
                     request.setEndpoint(url);
@@ -44,8 +44,8 @@ public with sharing class EBRController {
             }
                 
             result = response.getBody();
-        } catch(exception ex) {
-            if(ex.getMessage() == 'Read timed out' && isFirstAttempt == true){
+        } catch (exception ex) {
+            if (ex.getMessage() == 'Read timed out' && isFirstAttempt == true) {
                 result = getJson(token, command, query, distributor, false);
             }
         }
@@ -84,10 +84,10 @@ public with sharing class EBRController {
                 
             Integer status = response.getStatusCode();
                 
-            if(status == 307){
+            if (status == 307) {
                 Integer count = 0;
                 
-                while(status == 307 && count <= 10){
+                while (status == 307 && count <= 10) {
                     url = response.getHeader('Location');
 
                     request.setEndpoint(url);
@@ -100,8 +100,8 @@ public with sharing class EBRController {
             }
                 
             // result = response.getBody();
-        } catch(exception ex) {
-            if(ex.getMessage() == 'Read timed out' && isFirstAttempt == true){
+        } catch (exception ex) {
+            if (ex.getMessage() == 'Read timed out' && isFirstAttempt == true) {
                 result = postJson(token, command, query, distributor, data, false);
             }
         }
