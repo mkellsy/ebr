@@ -1,2 +1,2 @@
-# ebr
+# EBR
 Encompass ECP SalesForce Intergration
