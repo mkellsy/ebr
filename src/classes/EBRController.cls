@@ -21,7 +21,7 @@ public with sharing class EBRController {
             HttpRequest request = new HttpRequest();
                 
             request.setMethod('GET');
-			request.setEndpoint(url);
+            request.setEndpoint(url);
 
             Http http = new Http();
             HTTPResponse response = http.send(request);
@@ -46,7 +46,7 @@ public with sharing class EBRController {
             result = response.getBody();
         } catch(exception ex) {
             if(ex.getMessage() == 'Read timed out' && isFirstAttempt == true){
-				result = getJson(token, command, query, distributor, false);
+                result = getJson(token, command, query, distributor, false);
             }
         }
 
