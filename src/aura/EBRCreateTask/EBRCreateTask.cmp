@@ -1,0 +1,58 @@
+<aura:component controller="EBRController" implements="force:appHostable,force:lightningQuickAction,forceCommunity:availableForAllPageTypes,force:hasRecordId">
+    <ltng:require scripts="{!$Resource.ebr}" />
+
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="account" type="Account" />
+
+    <aura:attribute name="customerId" type="string" />
+    <aura:attribute name="customerName" type="string" />
+    <aura:attribute name="customerPhone" type="string" />
+
+    <aura:attribute name="city" type="string" />
+    <aura:attribute name="dtate" type="string" />
+    <aura:attribute name="postalCode" type="string" />
+
+    <aura:attribute name="longitude" type="string" />
+    <aura:attribute name="latitude" type="string" />
+
+    <aura:attribute name="salesmanName" type="string" />
+    <aura:attribute name="salesmanPhone" type="string" />
+
+    <aura:handler name="change" value="{!v.account}" action="{!c.load}" />
+
+    <force:recordData aura:id="accountRecord" recordId="{!v.recordId}" targetFields="{!v.account}" layoutType="FULL" />
+
+    <div class="ebr-component">
+    	<div id="new-task-form" class="ebr-info">
+    	    <lightning:layoutItem padding="around-small">
+                <div>
+                    <span class="ebr-lebel" title="ID">Title</span>
+                </div>
+                <div>
+                    <ui:inputText aura:id="title" class="field" />
+                </div>
+            </lightning:layoutItem>
+        
+            <lightning:layoutItem padding="around-small">
+                <div>
+                    <span class="ebr-lebel" title="ID">Detail</span>
+                </div>
+                <div>
+                    <ui:inputTextArea aura:id="detail" rows="8" />
+                </div>
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="around-small">
+                <ui:button class="btn" label="Send" press="{!c.submit}"/>
+            </lightning:layoutItem>
+        </div>
+
+        <div id="loading-spinner" class="ebr-spinner">
+            <lightning:spinner alternativeText="Loading" size="large" />
+        </div>
+
+        <div id="success-message" class="ebr-success-message">
+            Task Sent
+        </div>
+    </div>
+</aura:component>

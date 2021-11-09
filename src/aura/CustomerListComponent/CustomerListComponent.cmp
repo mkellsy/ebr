@@ -1,0 +1,99 @@
+<aura:component controller="CustomerComponentController" access="global" implements="force:appHostable" >
+    <ltng:require styles="/resource/SLDS/assets/styles/salesforce-lightning-design-system.css"/> 
+    
+    <!--Component Attributes-->
+    <aura:attribute type="String" name="distributor" default=""/>
+    <aura:attribute type="String" name="sessionId" default=""/>
+    <aura:attribute name="allCustomers" type="CustomerWrapper[]" />
+    <aura:attribute name="customerList" type="CustomerWrapper[]" />
+    <aura:attribute name="showCustomers" type="boolean" default="true"/>
+    <aura:attribute name="customerCount" type="integer" />
+    <aura:attribute type="Boolean" name="sortAsc" default="true"/>
+    <aura:attribute type="String" name="sortField" default="Name"/>
+    <aura:attribute type="String" name="searchString" />
+    <aura:attribute name="keyDelay" type="Integer" />
+    <aura:attribute type="String" name="prevSearchString" />
+    <aura:attribute type="String" name="displayString" default="No customers found." />
+    
+    <aura:method name="getCust" action="{!c.getCustomersList}" />
+
+    
+    <aura:handler name="init" value="{!this}" action="{!c.getCustomersList}"/>
+    <aura:registerEvent name="GetCustomerDetails" type="c:GetCustomerDetails" />
+    <aura:registerEvent name="GoBackToDistributorList" type="c:GoBackToDistributorList" />
+    <aura:handler event="c:selectCustomer" action="{!c.populatedetail}"/>
+    
+	    <header class="slds-global-header_container header-fixed" >
+        
+        <div class="slds-global-header slds-grid slds-grid--align-spread" style="height:65px;">
+            <div class="slds-global-header__item slds-global-header__item--search">
+                <div class="slds-form-element slds-lookup">
+                    <div class="slds-form-element__control">
+                        <div style="margin: 0px 5px 0px 5px;display:flex;">
+                            <!--<img src="/resource/EncompassIcons/back.png" class="back" onclick="{!c.goToDistributorList}"/>-->
+                            <img src="{!$Resource.Back}" class="back" onclick="{!c.goToDistributorList}"/>
+                            <ui:inputText aura:id="textsearch" class="slds-input searchInput" keyup="{!c.searchCustomers}"  value="{!v.searchString}" placeholder="Search Stores" updateOn="keyup"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <ui:scrollerWrapper class="scrollerSize">
+        <div style="margin-top:75px;">
+            <aura:if isTrue="{!v.showCustomers}">
+                <div class="slds-tile slds-media media-header" style="margin: 5px 0 5px 5px;border-bottom: 1px solid #dcdcdc; ">
+                    <div class="slds-media__figure">
+                        <!--<img src="/resource/EncompassIcons/stores.png"  />-->
+                        <img src="{!$Resource.Stores}"/>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-truncate" title="All Stores"><ui:outputText class="title-header" value="All Stores"/></div>
+                        <div class="slds-tile__detail slds-text-body--small">
+                            <ul class="slds-list--horizontal slds-has-dividers--right">
+                                <li class="slds-item">
+                                    <aura:if isTrue="{!greaterthanorequal(v.customerCount,0)}">
+                                        <div >
+                                            <ui:outputText class="title-sub-header" value="{!v.customerCount + ' items, sorted by Name'}"/>
+                                        </div>
+                                    </aura:if>
+                                </li>
+                            </ul> 
+                        </div>
+                    </div>
+                </div>
+                
+                <ul class="slds-list--vertical slds-wrap" >
+                    <aura:iteration items="{!v.customerList}" var="cust">
+                        <c:CustomerCard cust="{!cust}"/>
+                    </aura:iteration>
+                </ul>
+
+               <!-- <img src="/resource/EncompassIcons/sort.png" class="back" onclick="{!c.showMore}"/>-->
+
+            </aura:if>  
+        </div>
+    </ui:scrollerWrapper>
+    
+    <aura:if isTrue="{!!v.showCustomers}">   
+        <center>
+        	<ui:outputText value="{!v.displayString}"/>
+        </center>
+    </aura:if>    
+    <aura:if isTrue="{!v.customerCount>1}"> 
+        
+        <footer class="footer actionButtons oneActionBar oneCenterStage cEncompass" aria-hidden="false" data-aura-rendered-by="741:0;p" data-aura-class="oneActionBar oneCenterStage">
+            <a onclick="{!c.sortByName}" >
+                <div class="footer">
+                    <!--<div style="text-align:center;">
+                        <img src="/resource/EncompassIcons/sort.png" />
+                    </div>                                            
+                    <div style="text-align:center;color:#54698d;font-size:11px" >
+                        <ui:outputText value="Sort" />
+                    </div> -->
+                </div>
+            </a>
+        </footer>
+    </aura:if> 
+</aura:component>

@@ -1,0 +1,61 @@
+<aura:component access="global" implements="force:appHostable,flexipage:availableForAllPageTypes">
+    <!-- Attributs -->
+    <aura:attribute name="showEncompassComp" type="boolean" default="true" />
+    <aura:attribute name="showCustomerDetails" type="boolean" default="false" />
+    <aura:attribute name="showChatDetails" type="boolean" default="false" />
+    <aura:attribute name="sessionId" type="string"/>
+    <aura:attribute name="customerID" type="string"/>
+    <aura:attribute name="distributor" type="string"/>
+    <aura:attribute name="searchString" type="string"/>
+    <aura:attribute name="recentMsg" type="string"/>
+    <aura:attribute name="customer" type="CustomerWrapper" />
+    <aura:attribute name="activeTabId" type="string" default="detailsTab"/>
+    <aura:attribute name="keyDelay" type="Integer" />
+    <aura:attribute type="String" name="prevSearchString" />
+    <aura:attribute type="String" name="displayString" default="No customers found." />
+    
+    <!-- Event Handlers -->
+    <aura:handler name="GetCustomerList" event="c:GetCustomerList" action="{!c.handleEvent}"/>
+    <aura:handler name="GetCustomerDetails" event="c:GetCustomerDetails" action="{!c.handleEvent1}"/>
+    <aura:handler name="GoBackToCustomerList" event="c:GoBackToCustomerList" action="{!c.handleEvent2}"/>
+    <aura:handler name="GoBackToDistributorList" event="c:GoBackToDistributorList" action="{!c.handleEvent3}" /> 
+    <aura:handler name="GoToChatDetails" event="c:GoToChatDetails" action="{!c.GoToChatDetails}" />
+    <aura:handler name="GoBackToStoreDetails" event="c:GoBackToStoreDetails" action="{!c.GoBackToStoreDetails}" />
+    <aura:handler access="global" event="c:toggleSpinner" action="{!c.toggleSpinner}"/>
+    
+    <!-- Spinner-->
+    <center>
+        <div class="slds-spinner_container" aura:id="spinner" style="position : fixed !important;">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </center>
+    
+    <!-- Distributor List Component-->
+    <aura:if isTrue="{!v.showEncompassComp}">
+        <aura:if isTrue="{!!v.showCustomerDetails}" >
+        	<aura:if isTrue="{!!v.showChatDetails}">
+            	<c:Encompass />
+            </aura:if>
+        </aura:if>
+    </aura:if>
+    
+    <!-- Customer List Component-->
+    <aura:if isTrue="{!!or(v.showEncompassComp,v.showCustomerDetails)}">
+        <aura:if isTrue="{!!v.showChatDetails}">
+            <c:CustomerListComponent sessionId="{!v.sessionId}" distributor="{!v.distributor}" searchString="{!v.searchString}" />
+        </aura:if>
+    </aura:if>
+    
+    <!-- Customer Details Component-->
+    <aura:if isTrue="{!v.showCustomerDetails }">
+        <c:StoreDetails sessionId="{!v.sessionId}" customerID="{!v.customerID}" distributor="{!v.distributor}" selectedTabId="{!v.activeTabId}" recentMsg="{!v.recentMsg}"/>
+    </aura:if> 
+    
+    <aura:if isTrue="{!v.showChatDetails}">
+        <c:Chat customer="{!v.customer}" sessionId="{!v.sessionId}" customerID="{!v.customerID}"/>
+    </aura:if>
+</aura:component>

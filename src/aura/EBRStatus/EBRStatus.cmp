@@ -1,0 +1,187 @@
+<aura:component controller="EBRController" implements="force:appHostable,force:lightningQuickAction,forceCommunity:availableForAllPageTypes,force:hasRecordId">
+    <ltng:require scripts="{!$Resource.ebr}" />
+
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="account" type="Account" />
+
+    <aura:attribute name="customerId" type="string" />
+    <aura:attribute name="customerName" type="string" />
+    <aura:attribute name="customerPhone" type="string" />
+
+    <aura:attribute name="city" type="string" />
+    <aura:attribute name="dtate" type="string" />
+    <aura:attribute name="postalCode" type="string" />
+
+    <aura:attribute name="longitude" type="string" />
+    <aura:attribute name="latitude" type="string" />
+
+    <aura:attribute name="salesmanName" type="string" />
+    <aura:attribute name="salesmanPhone" type="string" />
+
+    <aura:attribute name="taskData" type="Object[]" />
+    <aura:attribute name="salesData" type="Object[]" />
+    <aura:attribute name="salesDataRolling" type="Object[]" />
+    <aura:attribute name="salesDataYtd" type="Object[]" />
+
+    <aura:handler name="change" value="{!v.account}" action="{!c.load}" />
+    <aura:handler name="change" value="{!v.customerId}" action="{!c.getData}" />
+
+    <force:recordData aura:id="accountRecord" recordId="{!v.recordId}" targetFields="{!v.account}" layoutType="FULL" />
+
+    <div class="ebr-component">
+        <div id="status-layout" class="ebr-info">
+            <lightning:card title="{!v.customerName}" iconName="standard:account">
+                <p class="slds-p-horizontal_small">
+                    Salesperson: {!v.salesmanName}<br />
+                    {!v.salesmanPhone}
+                </p>
+            </lightning:card>
+
+            <lightning:card title="Case Equivs (Rolling 12 Months)" iconName="standard:report">
+                <p class="slds-p-horizontal_small">
+                    <div id="sales-report" class="ebr-info">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; width: 33%;">Last Year</th>
+                                    <th style="text-align: center; width: 33%;">This Year</th>
+                                    <th style="text-align: center; width: 34%;">Difference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.salesData}" var="data">
+                                    <tr>
+                                        <td style="text-align: center;">{!data.LastYear}</td>
+                                        <td style="text-align: center;">{!data.ThisYear}</td>
+                                        <aura:if isTrue="{!data.up}">
+                                            <td style="text-align: center;">{!data.CaseEquivsPercentageDifference}%</td>
+                                            <aura:set attribute="else">
+                                                <td style="text-align: center; color: red;">({!data.CaseEquivsPercentageDifference}%)</td>
+                                            </aura:set>
+                                        </aura:if>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                    </div>
+                </p>
+            </lightning:card>
+
+            <lightning:layoutItem padding="around-small">
+                <ui:button class="btn" label="Rolling 12 Months" press="{!c.rolling}"/>
+                <ui:button class="btn" label="Year To Date" press="{!c.ytd}"/>
+            </lightning:layoutItem>
+
+            <lightning:card title="Tasks" iconName="standard:event">
+                <p class="slds-p-horizontal_small">
+                    <div id="task-list" class="ebr-info">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Days Old</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.taskData}" var="task">
+                                    <tr id="{!task.TaskID}">
+                                        <td>{!task.Task}</td>
+                                        <td>{!task.Status}</td>
+                                        <td style="text-align: right;">{!task.DaysOld}</td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                    </div>
+                </p>
+            </lightning:card>
+        </div>
+
+        <div id="sales-rolling" class="ebr-info">
+            <lightning:layoutItem padding="around-small">
+                <ui:button class="btn" label="Back" press="{!c.getData}"/>
+            </lightning:layoutItem>
+
+            <lightning:card title="Rolling 12 Months" iconName="standard:report">
+                <p class="slds-p-horizontal_small">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th style="text-align: right;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.salesDataRolling}" var="data">
+                                <tr>
+                                    <td>{!data.ProductName}</td>
+                                    <td style="text-align: right; white-space: nowrap;">
+                                        Case Equivs<br />
+                                        Last Year: {!data.LastYear}<br />
+                                        <b>This Year: {!data.ThisYear}</b><br />
+                                        <aura:if isTrue="{!data.up}">
+                                            Difference: {!data.CaseEquivsPercentageDifference}%
+                                            <aura:set attribute="else">
+                                                Difference: <span style="color: red;">({!data.CaseEquivsPercentageDifference}%)</span>
+                                            </aura:set>
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </p>
+            </lightning:card>
+
+            <lightning:layoutItem padding="around-small">
+                <ui:button class="btn" label="Back" press="{!c.getData}"/>
+            </lightning:layoutItem>
+        </div>
+
+        <div id="sales-ytd" class="ebr-info">
+            <lightning:layoutItem padding="around-small">
+                <ui:button class="btn" label="Back" press="{!c.getData}"/>
+            </lightning:layoutItem>
+
+            <lightning:card title="Year to Date" iconName="standard:report">
+                <p class="slds-p-horizontal_small">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th style="text-align: right;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.salesDataYtd}" var="data">
+                                <tr>
+                                    <td>{!data.ProductName}</td>
+                                    <td style="text-align: right; white-space: nowrap;">
+                                        Case Equivs<br />
+                                        Last Year: {!data.LastYear}<br />
+                                        <b>This Year: {!data.ThisYear}</b><br />
+                                        <aura:if isTrue="{!data.up}">
+                                            Difference: {!data.CaseEquivsPercentageDifference}%
+                                            <aura:set attribute="else">
+                                                Difference: <span style="color: red;">({!data.CaseEquivsPercentageDifference}%)</span>
+                                            </aura:set>
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </p>
+            </lightning:card>
+
+            <lightning:layoutItem padding="around-small">
+                <ui:button class="btn" label="Back" press="{!c.getData}"/>
+            </lightning:layoutItem>
+        </div>
+
+        <div id="loading-spinner" class="ebr-spinner">
+            <lightning:spinner alternativeText="Loading" size="large" />
+        </div>
+    </div>
+</aura:component>

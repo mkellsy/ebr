@@ -1,0 +1,90 @@
+<aura:component controller="EncompassController" access="global" implements="force:appHostable,flexipage:availableForAllPageTypes" >
+    <ltng:require styles="/resource/SLDS/assets/styles/salesforce-lightning-design-system.css"/> 
+    
+    <!--Component Attributes-->
+    <aura:attribute name="allDistributors" type="DistributorWrapper[]" />
+    <aura:attribute name="distributorList" type="DistributorWrapper[]" />
+    <aura:attribute name="showDistributors" type="boolean" default="true"/>
+    <aura:attribute name="distributorCount" type="integer" />
+    <aura:attribute type="Boolean" name="sortAsc" default="true"/>
+    <aura:attribute type="String" name="sortField" default="Name"/>
+    <aura:attribute type="String" name="sessionId" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.getDistributorsList}"/>
+    <aura:registerEvent name="GetCustomerList" type="c:GetCustomerList" />
+    
+    <header class="slds-global-header_container header-fixed" >
+        <div class="slds-global-header slds-grid slds-grid--align-spread" style="height:65px;">
+            <div class="slds-global-header__item slds-global-header__item--search">
+                <div class="slds-form-element slds-lookup">
+                    <div class="slds-form-element__control">
+                        <div style="margin: 0px 5px 0px 5px;">
+                            <ui:inputText aura:id="textsearch" class="slds-input" keyup="{!c.searchDistributors}"  placeholder="Search Distributors" updateOn="keyup"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>    
+    
+    <ui:scrollerWrapper class="scrollerSize">
+        <div>
+            <aura:if isTrue="{!v.showDistributors}">
+                <div class="slds-tile slds-media media-header" style="margin: 0 0 0 10px;border-bottom: 1px solid #dcdcdc; ">
+                    <div class="slds-media__figure">
+                        <!--<img src="/resource/EncompassIcons/truckicon.png"  />-->
+                        <img src="{!$Resource.TruckIcon}"/>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-truncate" title="All Distributors"><ui:outputText class="title-header" value="All Distributors"/></div>
+                        <div class="slds-tile__detail slds-text-body--small">
+                            <ul class="slds-list--horizontal slds-has-dividers--right">
+                                <li class="slds-item">
+                                    <aura:if isTrue="{!greaterthanorequal(v.distributorCount,0)}">
+                                        <div >
+                                            <ui:outputText class="title-sub-header" value="{!v.distributorCount + ' items, sorted by Name'}"/>
+                                        </div>
+                                    </aura:if>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <ul class="slds-list--vertical slds-wrap" >
+                    <aura:iteration items="{!v.distributorList}" var="distr">
+                        <li class="slds-has-divider--bottom-space slds-item slds-wrap listing" >
+                            <div class="slds-tile" >
+                                <div class="slds-item--label slds-text-color--weak slds-truncate distributor-value" title="Name" onclick="{!c.getCustomers}" data-recId="{!distr.Distributor}">{!distr.Name}</div>
+                                <div class="slds-list--horizontal slds-wrap" >
+                                    <div class="slds-item--label slds-text-color--weak slds-truncate distributor-label" data-recId="{!distr.Distributor}" onclick="{!c.getCustomers}">City:</div>
+                                    <div class="slds-item--detail slds-truncate distributor-value " data-recId="{!distr.Distributor}"  onclick="{!c.getCustomers}">{!distr.City}</div>
+                                    <div class="slds-item--label slds-text-color--weak slds-truncate distributor-label"  data-recId="{!distr.Distributor}" title="Second Label" onclick="{!c.getCustomers}">State:</div>
+                                    <div class="slds-item--detail slds-truncate distributor-value " data-recId="{!distr.Distributor}"  onclick="{!c.getCustomers}">{!distr.State}</div>
+                                </div> 
+                            </div>    
+                        </li>
+                    </aura:iteration>
+                </ul>
+            </aura:if>  
+        </div>
+    </ui:scrollerWrapper>
+    
+    <aura:if isTrue="{!!v.showDistributors}">   
+        <ui:outputText value="No distributors found."/>
+    </aura:if>  
+
+    <aura:if isTrue="{!v.distributorCount>1}"> 
+        <footer class="actionButtons oneActionBar oneCenterStage footer" aria-hidden="false" data-aura-rendered-by="741:0;p" data-aura-class="oneActionBar oneCenterStage">
+            <a onclick="{!c.sortByName}" >
+                <div class="footer">
+                    <!--<div style="text-align:center;">
+                        <img src="/resource/EncompassIcons/sort.png" />
+                    </div>                                            
+                    <div style="text-align:center;color:#54698d;font-size:11px" >
+                        <ui:outputText value="Sort" />
+                    </div> -->
+                </div>
+            </a>
+        </footer>
+    </aura:if>
+</aura:component>

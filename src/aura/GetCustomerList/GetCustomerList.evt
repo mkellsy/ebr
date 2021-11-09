@@ -1,0 +1,5 @@
+<aura:event type="COMPONENT" >
+    <aura:attribute name="sessionId" type="string"/>
+    <aura:attribute name="distributor" type="string"/>
+    <aura:attribute name="showEncompassComp" type="boolean" default="true"/>
+</aura:event>

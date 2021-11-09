@@ -1,0 +1,64 @@
+.THIS .footer{
+    position: absolute;
+    /*bottom: 40px;*/
+    left: 0;
+    /*width: 100%;*/
+    height: 80px;
+    background: #FFFFFF;
+    box-shadow: 0 -2px 2px 0 rgba(0,0,0,.16);
+    z-index: 8000;
+    display: -ms-flexbox;
+    -ms-flex-pack: center;
+    justify-content: center;
+    /*padding: .5rem 0;*/
+}
+
+.THIS.scrollerSize {
+    padding:0;
+}
+.THIS .spacer-pull-to-load-more{
+    height: 0px !important;
+}
+
+.THIS .title-header {
+    font-size: 20px;
+    font-weight:300;
+}
+
+.THIS .title-sub-header {
+    font-size: 12px;
+    font-weight:400;
+}
+
+.THIS .distributor-value {
+    font-size: 16px;
+    font-weight:400;
+    padding-bottom: 3px;
+}
+
+.THIS .distributor-label{
+    font-size: 16px;
+    font-weight:400;
+    font-color: rgba(22 50 92, 0.60);
+}
+
+.THIS .listing {
+    background-color: rgb(255, 255, 255) !important;
+    box-sizing: border-box;
+    overflow: hidden;
+    width:100%;
+    min-height: 67.5px;
+    padding: 14px;
+    margin: 0px;
+    cursor:pointer;
+}
+
+.THIS .media-header {
+    margin-top: 3.8rem !important;
+    padding-top: .8rem;
+    padding-bottom: .8rem;
+}
+
+.THIS .header-fixed {
+    position: initial !important;
+}

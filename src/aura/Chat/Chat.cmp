@@ -1,0 +1,76 @@
+<aura:component >
+    <ltng:require styles="/resource/SLDS/assets/styles/salesforce-lightning-design-system.css"/>
+    
+    <aura:attribute name="sessionId" type="string"/>
+    <aura:attribute name="customerID" type="string"/>
+    <aura:attribute name="customer" type="CustomerWrapper" />
+    <aura:attribute name="wsMessages" type="List"/>
+    <aura:attribute access="private" name="messageToSend" type="String" default=""/>
+    <aura:attribute access="private" name="messageReceived" type="String" default=""/>
+    <aura:attribute access="private" name="error" type="String" default=""/>
+
+    
+    <aura:handler name="init" value="{!this}" action="{!c.getChatMessages}"/>
+    <aura:registerEvent name="GetCustomerDetails" type="c:GetCustomerDetails" />
+    <aura:registerEvent name="GoBackToStoreDetails" type="c:GoBackToStoreDetails" />
+    
+
+    <div class="back">
+        <img src="/resource/EncompassIcons/back.png"  onclick="{!c.goToCustomerDetails}"/>
+    </div>
+    <iframe aura:id="vfFrame" src="https://encompass-dev-ed--c.na40.visual.force.com/apex/Encompass" frameborder="0" scrolling="yes" width="100%" height="1px;" />
+    <br/>
+    <h3 class="slds-section-title--divider" style="margin: -35px 0 0 -5px;">Chatting With</h3>
+    <div class="slds-tile slds-media media-header slds-border--bottom" style="padding: 0px 0 10px 10px;">
+        <div class="slds-media__figure" style="background-color: rgb(98,183,237);padding: .5rem;border-radius: 50%;">
+            <img src="/resource/EncompassIcons/user.png"  />
+        </div>
+        <div class="slds-media__body">
+            <div class="slds-truncate" title="{!v.customer.Salesperson}" style="rgb(0,112,210);"><b><ui:outputText class="title-header" value="{!v.customer.Salesperson}"/></b></div>
+            <div class="slds-tile__detail slds-text-body--small">
+                <ul class="slds-list--horizontal slds-has-dividers--right">
+                    <li class="slds-item">
+                        <div >
+                            Salesperson
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <ui:scrollerWrapper class="scrollerSize">
+        <ul class="slds-list--vertical slds-wrap listing" style="margin-top:5px;margin-bottom:5px;">
+            <aura:iteration items="{!v.wsMessages}" var="wsMessage">
+                <div class="slds-tile slds-media media-header" style="margin: 5px 0 0 10px;">
+                    <div class="slds-media__figure" style="background-color: rgb(98,183,237);padding: .5rem;border-radius: 50%;">
+                        <img src="/resource/EncompassIcons/user.png"  />
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-truncate" title="{!v.customer.Salesperson}"><ui:outputText value="{!v.customer.Salesperson}"/></div>
+                        <div class="slds-tile__detail slds-text-body--small">
+                            <ul class="slds-list--horizontal slds-has-dividers--right">
+                                <li class="slds-item">
+                                    <div >
+                                        <ul class="slds-list--horizontal slds-has-dividers--left">
+                                            <li class="slds-item" >{!wsMessage}</li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </aura:iteration>
+        </ul>
+    </ui:scrollerWrapper>
+    
+    <footer class="footer" aria-hidden="false" data-aura-rendered-by="741:0;p" data-aura-class="">
+        <div class="footer">
+            <div style="margin: 0px 5px 0px 5px;display:flex;" >
+                <ui:inputText class="slds-input messageInput" aura:id="textMsg"  placeholder="Type a message..." value="{!v.messageToSend}" /> 
+                <button type="button" class="slds-button slds-button--brand" onclick="{!c.sendToVF}" style="margin-left: 5px;">Post</button>
+            </div>   
+        </div>
+    </footer>
+</aura:component>

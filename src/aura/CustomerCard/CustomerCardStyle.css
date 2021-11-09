@@ -1,0 +1,32 @@
+.THIS .highlight{
+	background-color: #ededed;
+}
+
+.THIS .customer-value {
+    font-size: 16px;
+    font-weight:400;
+    padding-bottom: 3px;
+}
+
+.THIS .customer-label{
+    font-size: 16px;
+    font-weight:400;
+    font-color: rgba(22 50 92, 0.60);
+}
+
+.THIS .media-header {
+    margin-top: -0.9rem !important;
+    padding-top: .8rem;
+    padding-bottom: .8rem;
+}
+
+.THIS .listing {
+    background-color: rgb(255, 255, 255) !important;
+    box-sizing: border-box;
+    overflow: hidden;
+    width:100%;
+    min-height: 67.5px;
+    padding: 14px;
+    margin: 0px;
+    cursor:pointer;
+}

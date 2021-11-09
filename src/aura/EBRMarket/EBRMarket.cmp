@@ -1,0 +1,100 @@
+<aura:component controller="EBRController" implements="force:appHostable,force:lightningQuickAction,forceCommunity:availableForAllPageTypes,force:hasRecordId">
+    <ltng:require scripts="{!$Resource.ebr}" />
+
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="account" type="Account" />
+
+    <aura:attribute name="customerId" type="string" />
+    <aura:attribute name="customerName" type="string" />
+    <aura:attribute name="customerPhone" type="string" />
+
+    <aura:attribute name="city" type="string" />
+    <aura:attribute name="dtate" type="string" />
+    <aura:attribute name="postalCode" type="string" />
+
+    <aura:attribute name="longitude" type="string" />
+    <aura:attribute name="latitude" type="string" />
+
+    <aura:attribute name="salesmanName" type="string" />
+    <aura:attribute name="salesmanPhone" type="string" />
+
+    <aura:attribute name="marketData" type="Object[]" />
+    <aura:attribute name="productData" type="Object" />
+
+    <aura:handler name="change" value="{!v.account}" action="{!c.load}" />
+    <aura:handler name="change" value="{!v.latitude}" action="{!c.getData}" />
+
+    <force:recordData aura:id="accountRecord" recordId="{!v.recordId}" targetFields="{!v.account}" layoutType="FULL" />
+
+    <div class="ebr-component">
+        <div id="report-layout" class="ebr-info">
+            <lightning:card title="{!v.customerName}" iconName="standard:account">
+                <p class="slds-p-horizontal_small">
+                    Salesperson: {!v.salesmanName}<br />
+                    {!v.salesmanPhone}
+                </p>
+            </lightning:card>
+
+            <lightning:card title="Market Analysis" iconName="standard:location">
+                <p class="slds-p-horizontal_small">
+                    <div id="market-report" class="ebr-info">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Rank</th>
+                                    <th style="width: 100%;">Product</th>
+                                    <th style="width: 110px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.marketData}" var="data">
+                                    <tr>
+                                        <td style="width: 80px;">#{!data.Rank}</td>
+                                        <td style="width: 100%;">
+                                            {!data.ProductName}<br />
+                                            <button class="slds-button slds-button--neutral btn uiButton" onclick="{!c.newOrder}" id="{!data.ProductID}">Order</button>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap; width: 110px;">
+                                            Total: {!data.TotalCases}<br />
+                                            Monthly: {!data.AvgCasesPerBuyerPerMonth}<br />
+                                            Share: {!data.MarketShare}%
+                                        </td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                    </div>
+                </p>
+            </lightning:card>
+        </div>
+
+        <div id="order-layout" class="ebr-info">
+            <lightning:layoutItem padding="around-small">
+                <div>
+                    <span class="ebr-lebel" title="Number of Units">Number of Units</span>
+                </div>
+                <div>
+                    <ui:inputText aura:id="numUnits" class="field" />
+                </div>
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="around-small">
+                <div>
+                    <span class="ebr-lebel" title="Notes">Notes</span>
+                </div>
+                <div>
+                    <ui:inputTextArea aura:id="detail" rows="8" />
+                </div>
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="around-small">
+                <ui:button class="btn" label="Send" press="{!c.sendOrder}"/>
+                <ui:button class="btn" label="Cancel" press="{!c.cancelOrder}"/>
+            </lightning:layoutItem>
+        </div>
+
+        <div id="loading-spinner" class="ebr-spinner">
+            <lightning:spinner alternativeText="Loading" size="large" />
+        </div>
+    </div>
+</aura:component>

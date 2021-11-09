@@ -1,0 +1,6 @@
+<aura:event type="COMPONENT" >
+	<aura:attribute name="sessionId" type="string"/>
+    <aura:attribute name="customerID" type="string"/>
+    <aura:attribute name="showCustomerDetails" type="boolean" default="true"/>
+    <aura:attribute name="searchString" type="string"/>
+</aura:event>

@@ -1,0 +1,226 @@
+<aura:component controller="CustomerDetailsComponentController" implements="force:appHostable" >
+    
+    <ltng:require styles="/resource/SLDS/assets/styles/salesforce-lightning-design-system.css"/>
+    <aura:attribute name="distributor" type="string" default=""/>
+    <aura:attribute name="sessionId" type="string" default=""/>
+    <aura:attribute name="customerID" type="string" default=""/>
+    <aura:attribute name="selectedTabId" type="string" default="detailsTab"/>
+    <aura:attribute name="customer" type="CustomerWrapper" />
+    <aura:attribute name="recentMsg" type="string" default=""/>
+
+
+    <aura:attribute access="private" name="messageToSend" type="String" default=""/>
+    <aura:attribute access="private" name="messageReceived" type="String" default=""/>
+    <aura:attribute access="private" name="error" type="String" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.getCustomerDetails}"/>
+    <aura:registerEvent name="GoBackToCustomerList" type="c:GoBackToCustomerList" />
+    <aura:registerEvent name="GoToChatDetails" type="c:GoToChatDetails" />
+    
+    <aura:attribute name="wsMessages" type="List"/>
+    
+    <ui:scrollerWrapper class="scrollerSize">
+        <div class="back">
+            <!--<img src="/resource/EncompassIcons/back.png"  onclick="{!c.goToCustomerList}"/>-->
+            <img src="{!$Resource.Back}"  onclick="{!c.goToCustomerList}"/>
+        </div>
+        <aura:if isTrue="{!v.customer !=null}">
+            <div class="slds-tile slds-media media-header" style="margin: 5px 0 0 10px;border-bottom: 1px solid #dcdcdc; ">
+                <div class="slds-media__figure">
+                    <!--<img src="/resource/EncompassIcons/stores.png"  />-->
+                    <img src="{!$Resource.Stores}" />
+                </div>
+                <div class="slds-media__body">
+                    <aura:if isTrue="{!v.customer.Customer !=null}">
+                        <div class="slds-truncate" title="{!v.customer.Customer}"><ui:outputText class="title-header" value="{!v.customer.Customer}"/></div>
+                    </aura:if>
+                    <div class="slds-tile__detail slds-text-body--small">
+                        <ul class="slds-list--horizontal slds-has-dividers--right">
+                            <li class="slds-item">
+                                <div >
+                                    <ul class="slds-list--horizontal slds-has-dividers--left">
+                                        <aura:if isTrue="{!v.customer.Address !=null}">
+                                            <li class="slds-item" >{!v.customer.Address}</li>
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.customer.Address2 !=null}">
+                                            <li class="slds-item">{!v.customer.Address2}</li>
+                                        </aura:if>
+                                    </ul>
+                                    <ul class="slds-list--horizontal slds-has-dividers--left">
+                                        <aura:if isTrue="{!v.customer.City !=null}">
+                                            <li class="slds-item" >{!v.customer.City}</li>
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.customer.State !=null}">
+                                            <li class="slds-item">{!v.customer.State}</li>
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.customer.PostalCode !=null}">
+                                            <li class="slds-item">{!v.customer.PostalCode}</li>
+                                        </aura:if>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+        <lightning:tabset selectedTabId="{!v.selectedTabId}">
+            <!--
+   			Note: When uncommenting this piece, remove the '/' in string '-/-' for this section 
+            <lightning:tab label='Chat' tabindex='2' id='chatTab' aura:id='chatTabId'>
+ 				<aura:if isTrue='{!v.customer.Salesperson !=null}'>
+ 					<div class='slds-truncate field-name' title='Salesperson'>Salesperson</div>
+ 					<div class='slds-tile slds-media media-header listing' style='margin: 5px 0 0 10px;'>
+ 						<div class='slds-media__figure' style='background-color: rgb(98,183,237);padding: .5rem;border-radius: 50%;'>
+ 							<img src='/resource/EncompassIcons/user.png' />
+ 						</div>
+ 						<div class='slds-media__body' onclick='{!c.goToChatComponent}' style='cursor:pointer;'>
+ 							<div class='slds-truncate' title='{!v.customer.Salesperson}'><ui:outputText value='{!v.customer.Salesperson}'/></div>
+        					<div class='slds-tile__detail slds-text-body-/-small'>
+                					<ul class='slds-list-/-horizontal slds-has-dividers-/-right'>
+ 									<li class='slds-item'>
+ 										<div >
+                     							<ul class='slds-list-/-horizontal slds-has-dividers-/-left'>
+ 												<li class='slds-item' >Hi John, Do you have a new shipment today?</li>
+             									<!-/-<li class='slds-item' >{!v.recentMsg}</li>-/->
+ 											</ul>
+ 										</div>
+									</li>
+								</ul>
+ 							</div>
+ 						</div>
+                	</div> 
+				</aura:if>
+			</lightning:tab>-->
+            <lightning:tab label="Details" tabindex="1" id="detailsTab">
+                <ul class="slds-list--vertical slds-wrap listing">
+                    <aura:if isTrue="{!v.customer.Salesperson !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <aura:if isTrue="{!v.customer.Salesperson !='None'}">
+                                        <!--EChat button goes here, Task 368105-->
+                                    </aura:if>    
+                                    <div class="slds-truncate field-name" title="Salesperson">Salesperson</div>
+                                    <div class="field-value">
+                                        <p >{!v.customer.Salesperson}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    <aura:if isTrue="{!v.customer.SalespersonPhone !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <div class="slds-truncate field-name" title="SalespersonPhone">Salesperson Phone</div>
+                                    <div class="field-value">
+                                        <p >{!v.customer.SalespersonPhone}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    <aura:if isTrue="{!v.customer.PrimaryCustomerContact !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <div class="slds-truncate field-name" title="Primary Store Contact">Primary Store Contact</div>
+                                    <div class="field-value">
+                                        <p >{!v.customer.PrimaryCustomerContact}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    <aura:if isTrue="{!v.customer.PrimaryCustomerPhone !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <div class="slds-truncate field-name" title="Primary Store Phone">Primary Store Phone</div>
+                                    <div class="field-value">
+                                        <p >{!v.customer.PrimaryCustomerPhone}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.customer.Chain !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board " >
+                                    <div class="slds-truncate field-name" title="Chain">Chain</div>
+                                    <div class="field-value">
+                                        <p>{!v.customer.Chain}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    <aura:if isTrue="{!v.customer.Chain2 !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <div class="slds-truncate field-name" title="National Chain">National Chain</div>
+                                    <div class="field-value"> 
+                                        <p >{!v.customer.Chain2}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    <aura:if isTrue="{!v.customer.StoreNumber !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <div class="slds-truncate field-name" title="Store Number">Store Number</div>
+                                    <div class="field-value">
+                                        <p >{!v.customer.StoreNumber}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.customer.Premise !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <div class="slds-truncate field-name" title="On Premise/Off Premise">On Premise/Off Premise</div>
+                                    <div class="field-value">
+                                        <p >{!v.customer.Premise}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    <aura:if isTrue="{!v.customer.StateLicenseNum !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <div class="slds-truncate field-name" title="State License Number">State License Number</div>
+                                    <div class="field-value">
+                                        <p >{!v.customer.StateLicenseNum}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                    <aura:if isTrue="{!v.customer.LicenseExpDate !=null}">
+                        <ul class="slds-has-dividers--around-space">
+                            <li class="slds-item">
+                                <div class="slds-tile slds-tile--board field-value">
+                                    <div class="slds-truncate field-name" title="License Expiration Date">License Expiration Date</div>
+                                    <div class="field-value">
+                                        <p >{!v.customer.LicenseExpDate}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </aura:if>
+                </ul>
+            </lightning:tab>
+        </lightning:tabset>
+    </ui:scrollerWrapper>
+</aura:component>

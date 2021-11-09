@@ -1,0 +1,36 @@
+.THIS .title-header {
+    font-size: 20px;
+    font-weight:300;
+}
+
+.THIS .field-value {
+    font-size: 16px;
+    font-weight:400;
+    padding-bottom: 3px;
+}
+
+.THIS .field-name{
+    color:rgb(84, 105, 141) !important;
+}
+
+.THIS .listing {
+    background-color: rgb(255, 255, 255) !important;
+    margin-top: -16px;
+}
+.THIS .back{
+    cursor: pointer;
+    background-color: rgb(255, 255, 255) !important;
+    padding: 5px 5px;
+}
+
+.THIS .messageInput{
+    margin: 0px 5px;
+}
+
+.THIS .hide{
+    display: none !important;
+}
+
+.THIS .spacer-pull-to-load-more{
+    height: 0px !important;
+}

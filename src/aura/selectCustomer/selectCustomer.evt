@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION">
+	<aura:attribute name="selectedCustomer" type="CustomerWrapper"/>
+    <aura:attribute name="customerID" type="string"/>
+</aura:event>
