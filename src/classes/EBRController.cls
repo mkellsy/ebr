@@ -7,7 +7,7 @@ public with sharing class EBRController {
 
     public static string getJson(string token, string command, string query, string distributor, boolean isFirstAttempt) {
         string result = '{}';
-        string url = 'https://api.encompass8.com/aspx1/API.ashx';
+        string url = 'https://api.encompass8.com/api';
 
         url += '?APIToken=' + token;
         url += '&EncompassID=' + distributor;
@@ -60,7 +60,7 @@ public with sharing class EBRController {
 
     public static string postJson(string token, string command, string query, string distributor, string data, boolean isFirstAttempt) {
         string result = '{}';
-        string url = 'https://api.encompass8.com/aspx1/API.ashx';
+        string url = 'https://api.encompass8.com/api';
 
         url += '?APIToken=' + token;
         url += '&EncompassID=' + distributor;
